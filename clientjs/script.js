@@ -5,49 +5,48 @@ const messageContainer = document.getElementById("message-container");
 
 const name = prompt("What is your name");
 
-appendMessage("<h1>You Joined</h1>");
-
 socket.emit("new-user", name);
 
-socket.on("chat-message", (data) => {
-  appendReceivedMessage(`${data.name}: ${data.message}`);
-});
+appendSystemMessage(`<h4>You joined, ${name}</h4>`);
 
 socket.on("user-connected", (name) => {
-  appendMessage(`<div class="text-white"><b>${name}</b>: connected</div>`);
+  appendSystemMessage(
+    `<div class="text-white"><b>${name}</b>: connected</div>`
+  );
 });
 
 socket.on("user-disconnected", (name) => {
-  appendMessage(`<b>${name}</b>:  disconnected`);
+  appendSystemMessage(`<b>${name}</b>:  disconnected`);
+});
+
+socket.on("chat-message", (data) => {
+  appendChatMessage(`${data.name}: ${data.message}`, "received");
 });
 
 messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const message = messageInput.value;
   socket.emit("send-chat-message", message);
-  appendSendMessage(message);
+  appendChatMessage(message, "sendt");
   messageInput.value = "";
 });
 
-function appendMessage(message) {
+function appendSystemMessage(message) {
   const messageElement = document.createElement("div");
   messageElement.innerHTML = message;
   messageContainer.append(messageElement);
 }
-function appendReceivedMessage(message) {
+
+function appendChatMessage(message, type) {
   const messageBox = document.createElement("div");
   const messageElement = document.createElement("div");
-  messageBox.classList.add("d-flex");
-  messageElement.classList.add("bg-success", "px-3", "py-1", "rounded");
-  messageElement.innerText = message;
-  messageContainer.append(messageBox);
-  messageBox.append(messageElement);
-}
-function appendSendMessage(message) {
-  const messageBox = document.createElement("div");
-  const messageElement = document.createElement("div");
-  messageBox.classList.add("d-flex", "justify-content-end");
-  messageElement.classList.add("bg-danger", "px-3", "py-1", "rounded");
+  if (type == "sendt") {
+    messageBox.classList.add("d-flex", "justify-content-end");
+    messageElement.classList.add("bg-danger", "px-3", "py-1", "rounded");
+  } else if (type == "received") {
+    messageBox.classList.add("d-flex");
+    messageElement.classList.add("bg-success", "px-3", "py-1", "rounded");
+  }
   messageElement.innerText = message;
   messageContainer.append(messageBox);
   messageBox.append(messageElement);

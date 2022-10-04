@@ -5,17 +5,3 @@ body {
 form {
   width: 500px;
 }
-
-.send {
-  float: right;
-}
-
-.received {
-  float: left;
-}
-
-.clear-fix::after {
-  content: "";
-  display: table;
-  clear: both;
-}

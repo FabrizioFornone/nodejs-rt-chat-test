@@ -1,0 +1,21 @@
+body {
+  background-color: rgb(167, 154, 168);
+}
+
+form {
+  width: 500px;
+}
+
+.send {
+  float: right;
+}
+
+.received {
+  float: left;
+}
+
+.clear-fix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
